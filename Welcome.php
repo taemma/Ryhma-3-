@@ -22,7 +22,7 @@ class Welcome extends CI_Controller {
         {
                 /*$sub = escapeshellcmd('/var/www/html/paho.mqtt.python/examples/sub_to_db_ATM.py');
                 $output = shell_exec($sub);*/
-                $this->sub();
+               /* $this->sub();*/
                 $this->load->model('Lukko');
                 $data['taulukko'] = $this->Lukko->lukontila();
                 $tila['atm'] = $this->Lukko->atmtila();
