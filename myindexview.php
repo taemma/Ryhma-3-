@@ -114,5 +114,8 @@ Tila 0 = Lukko on kiinni
                 class="button" value="kiinni" />
     </form>
 
+<meta http-equiv="refresh" content="1">
+
+  
 </body>
 </html>
