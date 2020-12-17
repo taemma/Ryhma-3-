@@ -18,7 +18,7 @@
                         return $query->result_array();
                 }
                 function atmtila(){
-/*foreach*/
+
                         $query = $this->db->query('SELECT DISTINCT id,msg,aika  FROM lukontila ORDER BY id DESC LIMIT 1');
 
                         $query->result_array();
