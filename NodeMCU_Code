@@ -14,8 +14,8 @@ int Led_Green = D3;
 Servo servo;
 
 //oman reitittimen sekä brokerin tiedot
-const char* ssid = "Vaha paskempi netti";
-const char* password = "paska123";
+const char* ssid = "Wlan Nimi";
+const char* password = "Wlan Salasana";
 const char* mqtt_server = "broker.hivemq.com";
 
 //========================================================================================================
@@ -154,4 +154,5 @@ void loop() {
     reconnect(); //pidetään yhteys auki ja kuunnellaan sekä lähetetän viestejä
   }
   client.loop();
+
 }
