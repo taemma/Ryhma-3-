@@ -47,12 +47,15 @@ recognizer.read("trainer.yml")
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True): 
     frame = frame.array
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) #kuvanmuokkaus
-    faces = faceCascade.detectMultiScale(gray, scaleFactor = 1.5, minNeighbors = 5)    
+    faces = faceCascade.detectMultiScale(gray, scaleFactor = 1.5, minNeighbors = 5)
+# Faces = kutsutaan luokittelijafunktiota havaitsemaan kasvoja freimissä. Ensin käsitellään harmaansävykuva.
+#        scalefactor määrittää kuinka paljon kuvan koko vähenee jokaisella kuvan skaalauksessa.
+#        minNeighbors määrittää kuinka monta "naapuria" jokaisen "palaehdokkaan" täytyisi säilyttää
     cv2.imshow('tunnistus', frame) #tulostetaan kehys ja nimetään se
     key = cv2.waitKey(1)
     rawCapture.truncate(0) #tyhjennetään streami, jotta voidaan valmistua seuraavaan kehykkseen
     for (x, y, w, h) in faces: #käydään koordinaateittain läpi
-        roiGray = gray[y:y+h, x:x+w] #(ycord_start, ycord_end)??
+        roiGray = gray[y:y+h, x:x+w] #otetaan pikselit Gray kuvamatriisista x/y-akseleiden ja sijoitetaan ne roiGary
         id_, conf = recognizer.predict(roiGray)#tunnistin ennustaa käyttäjän tunnuksen ja ennusteen luottamuksen
 #etsitään läpi "sanastosta" idlle ja kuvalle yhtäläisyys, jos kuvan henkilöt tunnistetaan
 #printataan "odotetaan kasvoja" kun täämä on käsitelty
