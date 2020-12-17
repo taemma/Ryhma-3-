@@ -58,7 +58,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 #printataan "odotetaan kasvoja" kun täämä on käsitelty
         for nimi, value in dicti.items():
             if value == id_:
-                print("odotetaan kasvoja")
+                print("kasvot löydetty")
          
         if conf <= 80:
             #tarkistetaan onko kuvien välillä tarpeeksi samanlaisuutta jos cof on alle 80 lähetetään arduinolle viesti
