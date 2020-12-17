@@ -8,10 +8,10 @@ def on_connect(client, userdata, flags, rc):
 
         client.subscribe("TVTLukko")
 #callback kun saadaan publish msg palvelimerlta
+#ERI TOPICEILLA SAMA SCRIPTI, MUTTA ERI TAULUUN TALLENNETAAN. Taulunnimi on lukontila. Muuten kaikki samoin.
 def on_message(client, userdata, msg):
         print(msg.topic+" "+str(msg.payload))
         #topikki = msg.topic
-        sql = "INSERT INTO lukontila(id,tila,msg,aika) VALUES(NULL,%s,%s ,CURRENT_TIMESTAMP);"
         sql = "INSERT INTO logi(id,tila,msg,aika) VALUES(NULL,%s,%s ,CURRENT_TIMESTAMP);"
         val =(msg.topic, str(msg.payload))
 #tallennetaan sql
