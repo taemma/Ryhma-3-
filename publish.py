@@ -17,5 +17,5 @@
 
 import context  # Ensures paho is in PYTHONPATH
 import paho.mqtt.publish as publish
-
+# Kiinni -napille oma scripti. Muuten sama kun tää mut topic ja message erit.
 publish.single( "Nappi","1",  hostname="broker.hivemq.com")
