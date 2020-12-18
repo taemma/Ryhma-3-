@@ -59,7 +59,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         roiGray = gray[y:y+h, x:x+w] #otetaan pikselit Gray kuvamatriisista x/y-akseleiden ja sijoitetaan ne roiGary
         id_, conf = recognizer.predict(roiGray)#tunnistin ennustaa käyttäjän tunnuksen ja ennusteen luottamuksen
 #etsitään läpi "sanastosta" idlle ja kuvalle yhtäläisyys, jos kuvan henkilöt tunnistetaan
-#printataan "odotetaan kasvoja" kun täämä on käsitelty
+#printataan "kasvot löydetty" kun täämä on käsitelty ja kasvot on löydetty ja kameran ikkunan voi sulkea
         for nimi, value in dicti.items():
             if value == id_:
                 print("kasvot löydetty")
