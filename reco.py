@@ -44,6 +44,7 @@ recognizer.read("trainer.yml")
 #ladataan cascade-tiedosto, luokittelija/tunnistin joka tunnistaa kasvot ja training koodilla saadut tiedot
 #luetaan kehykset ja muunnetaan kuvattavaa harmaaksi ja etsitään kasvot. Jos kuvassa huomataan kasvot otetaan
 #kuva ja verrataan tätä kuvaa tunnistettaviin kasvoihin tunnistimella
+#käytetään kasvojen tunnistukseen LBPH- pakettia joka on OpenCV kirjastossa
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True): 
     frame = frame.array
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) #kuvanmuokkaus
