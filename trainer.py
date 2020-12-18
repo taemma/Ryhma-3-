@@ -23,8 +23,8 @@ imageDir = os.path.join(baseDir, "kuvat") #määritellään kuvien hakemistot ja
 
 currentId = 1 #aloittava id numero nimelle
 labelIds = {} #nimen ja id yhdistys
-yLabels = [] #y akseli
-xTrain = []  #x akseli
+yLabels = [] # taulukko kertoo xTrain taulukon datan tiedot
+xTrain = []  #taulukko opetuskuvadataa 
 
 for root, dirs, files in os.walk(imageDir): #siirrytään kuvahakemistoon, jos kuvia on kuvat muutetaan Numpy-taulukoiksi
     print(root, dirs, files) #pääkäyttäjä, hakemisto polussa ja printataan kuvienomat kansiot
@@ -47,7 +47,7 @@ for root, dirs, files in os.walk(imageDir): #siirrytään kuvahakemistoon, jos k
             #kasvojen tunnistus tehdään uudelleen ja varmistetaan että kuvat ovat oikeita
             #tämän jälkeen valmistellaan trainingdata koordinaattien ja akselien avulla
             for (x, y, w, h) in faces:  #käydään läpi kasvot koordinaateittain
-                roi = imageArray[y:y+h, x:x+w] #määritelläään roi -> xy-akseleittain
+                roi = imageArray[y:y+h, x:x+w] #määritelläään roi -> xy-akseleittain ja tallennetaan xTrain taulukon jatkoksi ja yLabelsille tallennetaan id-muuttujan arvo joka vastaa kuvaa
                 xTrain.append(roi)
                 yLabels.append(id_)
 with open("labels", "wb") as f: #avataan tiedpsto kirjoitettavasksi binäärimuodossa
