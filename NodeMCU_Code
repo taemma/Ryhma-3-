@@ -5,20 +5,21 @@
 #include <Servo.h>
 
 //========================================================================================================
-#define timeSeconds 50
+#define timeSeconds 60
 //========================================================================================================
 
-int Led_Red = D2;
-int Led_Green = D3;
+int Led_Red = D2; //punainen led
+int Led_Green = D3; //vihreä led
 
 Servo servo;
 
 //oman reitittimen sekä brokerin tiedot
-const char* ssid = "Wlan Nimi";
-const char* password = "Wlan Salasana";
-const char* mqtt_server = "broker.hivemq.com";
+const char* ssid = "Wlan Nimi";  //wlan nimi
+const char* password = "Wlan Salasana"; //wlan salasana
+const char* mqtt_server = "broker.hivemq.com"; //MQTT server
 
 //========================================================================================================
+// asetetaan kello
 unsigned long now = millis();
 unsigned long lastTrigger = 0;
 boolean startTimer = false;
@@ -50,20 +51,21 @@ void setup_wifi() {
 
 void callback(char* topic, byte* payload, unsigned int length) 
 {
-  Serial.print("MQTT brokerilta, Topic  :[");
+  Serial.print("MQTT brokerilta, Topic  :");
   Serial.print(topic);
   int p =(char)payload[0]-'0';
   // Printtaa jos brokerilta tulee tietty viesti
   // Määrätään että brokerilta pitää tulla seuraavat 
-  
- //int value = 0;
- //int value = 0;
- // Seuraavaksi jossitella
 
-if (p==0)  {
+ 
+if (p==0)  { //Lukko suljetaan
+  Serial.println(" Lukko Suljettiin"); 
+  client.publish("TVTLukko", "0"); //Jos p=0 lähettää viestin topiciin "tämä", viestin "tuo"
 LukkoKiinni();
+
 }
-if (p==1)  {  
+if (p==1)  { //Lukko aukaistaan
+  Serial.println(" Lukko aukaistiin"); 
 LukkoAuki();
 AukaiseLukko();
 }
@@ -72,25 +74,25 @@ AukaiseLukko();
 } // Callback loppuu
 
 //========================================================================================================
-ICACHE_RAM_ATTR void AukaiseLukko() {
-  //Serial.println("Yksi havaittu");
-  //LukkoAuki();
+ICACHE_RAM_ATTR void AukaiseLukko() { //keskeytys palvelin
+  
   startTimer = true;
   lastTrigger = millis();
-  //LukkoKiinni();
 }
 //========================================================================================================
 //========================================================================================================
-void LukkoKiinni() {
-   client.publish("TVT19Lukko", "Kiinni"); //Jos p=0 lähettää viestin topiciin "tämä", viestin "tuo"
+void LukkoKiinni() {  // aliohjela suljetaan lukko
+  
   servo.write(0); //Servo kääntyy 0 asteeseen
   value=0;
   analogWrite(Led_Red, HIGH);
   delay(500);
   analogWrite(Led_Red, LOW);
+ 
 }
-void LukkoAuki() {
-  client.publish("TVT19Lukko", "Auki"); //Jos p=1 lähettää viestin topiciin "tämä", viestin "tuo"
+void LukkoAuki() { //aliohjelma lukko aukaistaan
+  
+  client.publish("TVTLukko", "1"); //Jos p=1 lähettää viestin topiciin "tämä", viestin "tuo"
   servo.write(90); //Servo kääntyy 90 asteeseen
   value=90;
   analogWrite(Led_Green, HIGH);
@@ -101,19 +103,20 @@ void LukkoAuki() {
 
 void reconnect() {
   // Muodostaa yhteyttä kunnes yhteys on muodostettu
-  while (!client.connected()) 
+  while (!client.connected()) // aloitetaan MQTT serverille yhdistäminen
   {
-    Serial.print("Yhdistetään MQTT Brokeriin...");
+    Serial.print("Yhdistetään MQTT Brokeriin..."); 
      // Toteutetaan "asiakasnumero" jotta saadaan tehdä kyselyitä
       String clientId = "ESP8266Client-";
       clientId += String(random(0xffff), HEX);
        if (client.connect(clientId.c_str()))
     {
       Serial.println("Yhdistetty");
-     //once connected to MQTT broker, subscribe command if any
+     // nyt kun on yhdistetty MQTT serverille aletaan Tilaamaan topiceja:
       client.subscribe("Tunnistettu"); // tilataan viesti Topicilta tämä
-     // client.publish("TVT19Lukko", "Testi"); // pyritään saamaan jatkuva lukontila lähetys
-    } else {
+      client.subscribe("napilta");  // tilataan viesti Topicilta tämä
+     
+    } else { //jos yhteys epäonnistuu MQTT serverille 
       Serial.print("Yhteys epäonnistui, rc=");
       Serial.print(client.state());
       Serial.println("Yhdistetään uudelleen 5 sekunnin kuluttua");
@@ -133,25 +136,37 @@ void setup() {
    pinMode(Led_Red, OUTPUT); 
    pinMode(Led_Green, OUTPUT); 
    //========================================================================================================
-attachInterrupt(D4, AukaiseLukko, RISING);
+attachInterrupt(D4, AukaiseLukko, RISING); //keskeytyspalvelin
    //========================================================================================================
+}
+
+void LahetaKiinni(){
+  while(1){
+    Serial.println("odottaa");
+  }
 }
 
 void loop() {
  
   //========================================================================================================
-  now = millis();
+  now = millis(); // kello alkaa raksuttamaan
   lastTrigger = 0;
   // Turn off the LED after the number of seconds defined in the timeSeconds variable
   if(startTimer && (now - lastTrigger > (timeSeconds*1000))) {
-    Serial.println("Lukko suljettiin");
+   startTimer = false;
+    client.publish("TVTLukko", "0");
     LukkoKiinni();
-    startTimer = false;
+    LahetaKiinni();
+    
   }
+ // if (startTimer == false){
+ //LukkoKiinni();
+ // client.publish("TVTLukko", "0");
+ // }
   //========================================================================================================
   
-  if (!client.connected()) {
-    reconnect(); //pidetään yhteys auki ja kuunnellaan sekä lähetetän viestejä
+  if (!client.connected()) { // tällä toteutetaan jatkuva topicin tilaus
+    reconnect(); //pidetään yhteys auki ja kuunnellaan
   }
   client.loop();
 
